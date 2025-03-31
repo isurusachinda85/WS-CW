@@ -10,7 +10,7 @@
 #CMD ["python", "app.py"]
 
 
-FROM python:3.9-slim
+FROM python:3.9-slim 
 
 WORKDIR /app
 
