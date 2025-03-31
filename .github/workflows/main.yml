@@ -1,0 +1,42 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v2
+
+    - name: Log in to Docker Hub
+      run: echo "${{ secrets.PASSWORD }}" | docker login -u "${{ secrets.USERNAME }}" --password-stdin
+
+    - name: Build, Push Docker Images, and Run Unit Tests
+      run: |
+        services=("crypto-price-service" "transaction-service" "account-service")
+        for service in "${services[@]}"; do
+          # Build Docker image
+          docker build -t ${{ secrets.USERNAME }}/$service:latest ./services/$service
+          # Push Docker image
+          docker push ${{ secrets.USERNAME }}/$service:latest
+          # Run unit tests
+          cd services/$service
+          pip install -r requirements.txt
+          pytest
+          cd ../..
+        done
+
+    - name: Clean up
+      run: |
+        docker system prune -af
