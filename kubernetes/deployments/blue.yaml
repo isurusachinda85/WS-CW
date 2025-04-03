@@ -16,6 +16,6 @@ spec:
     spec:
       containers:
         - name: crypto-service
-          image: harshanasenadeera/crypto-service:blue
+          image: isurusachinda/crypto-service:blue
           ports:
             - containerPort: 80
