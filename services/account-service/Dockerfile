@@ -21,3 +21,5 @@ COPY . .
 
 EXPOSE 5003
 CMD ["python", "app.py"]
+
+
